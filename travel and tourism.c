@@ -5,22 +5,37 @@
 
 void Heading();
 void Welcome();
+void addPackage(); 
+void viewPackages();
+void updatePackage();
+void deletePackage(); 
+void menu();
+				// structure of travelling package
+typedef struct travelpackage{
+	int id;
+	char firstname[20];
+	char lastname[20];
+	char password[20];
+	char vehicles;
+    char destination[50];
+}Travelling_data;
+
 int main(){
 	char username[20];
-	int password;        		// Password is set as 12345.
+	int password;        	
 	
 	
-	//for wellcome interface.
+				// for wellcome interface.
 	Welcome();	
 	
-	
+				// User Authentication.
 	printf("\n\n\n\t\tEnter your name:  ");
 	scanf("%s", username);
-	printf("\t\tEnter login password:  ");
+	printf("\n\t\tEnter login password:  ");
 	scanf("%d",&password);
-	if(password == 12345)
+	if(password == 12345)			// Password is set as 12345.
 	{
-		printf("\n\n\t\t\t");
+		printf("\n\n\n\t\t\t");
 		printf("login successfull\n\n\tprocessing");
 		int i;
 		for(i=1; i<=3; i++){
@@ -28,26 +43,45 @@ int main(){
 			printf(".");
 		}
 		system("cls");
-		Heading();
+		menu(username);		// adding menu function...
 	}
 	else
 	{
-		printf("\n\n\t\t\t");
+		int i;
+		{
+		printf("\n\n\n\t\t\t");
+		printf("Processing");
+		for(i=1; i<=2; i++){
+			sleep(1);
+			printf(".");
+		}
+	}
+		printf("\n\n\n\t\t\t");
 		printf("--- invalid password sorry ---");
+		printf("\n\t\t");
+		printf("press any key to exit ....");
+		while(i<5){
+			printf("\n");
+			i++;
+		}
 	}
 	return 0;
 }
+
+				// Wellcone interface.
 void Welcome(){
 	int i;
 	printf("\n\t\t\t");
 	for(i=1;i<10;i++){
 		printf(".");
 	}
-	printf(" wellcome to our Travel and Tourism management system ");
+	printf(" Wellcome to our Travel and Tourism management system ");
 	for(i=1;i<10;i++){
 		printf(".");
 	}
 }
+
+				// headline of travel management system.
 void Heading(){
 	int n=1;
 	printf("\n\t\t\t");
@@ -73,4 +107,19 @@ void Heading(){
 		printf("=");
 		n++;
 	}
+}
+
+				// menu options
+void menu(char username[]) {
+    int choice;
+       Heading();
+        printf("\n\n\n\tHello %s",username);
+        printf("\n\tPlease chose the following options.");
+        printf("\n\n\t\t1. Add New Travel Package\n");
+        printf("\t\t2. View All Travel Packages\n");
+        printf("\t\t3. Update Travel Package\n");
+        printf("\t\t4. Delete Travel Package\n");
+        printf("\t\t5. Exit\n");
+        printf("\n\tEnter your choice: ");
+        scanf("%d", &choice);
 }
