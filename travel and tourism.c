@@ -1,8 +1,9 @@
+// header files...
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
 #include<unistd.h>
-
+// functions...
 void Heading();
 void Welcome();
 void addPackage(); 
@@ -10,12 +11,14 @@ void viewPackages();
 void updatePackage();
 void deletePackage(); 
 void menu();
-				// structure of travelling package
+				// structure of travelling package.
 typedef struct travelpackage{
 	int id;
 	char firstname[20];
 	char lastname[20];
 	char password[20];
+	char email[30];
+	int number[15];
 	char vehicles;
     char destination[50];
 }Travelling_data;
@@ -30,7 +33,7 @@ int main(){
 	
 				// User Authentication.
 	printf("\n\n\n\t\tEnter your name:  ");
-	scanf("%s", username);
+	scanf("%[^\n]%*c", username);
 	printf("\n\t\tEnter login password:  ");
 	scanf("%d",&password);
 	if(password == 12345)			// Password is set as 12345.
@@ -48,14 +51,12 @@ int main(){
 	else
 	{
 		int i;
-		{
 		printf("\n\n\n\t\t\t");
 		printf("Processing");
 		for(i=1; i<=2; i++){
 			sleep(1);
 			printf(".");
 		}
-	}
 		printf("\n\n\n\t\t\t");
 		printf("--- invalid password sorry ---");
 		printf("\n\t\t");
@@ -122,4 +123,39 @@ void menu(char username[]) {
         printf("\t\t5. Exit\n");
         printf("\n\tEnter your choice: ");
         scanf("%d", &choice);
+        switch(choice){
+        	case 1: addPackage(); break;
+        		
+		}
+}
+
+				// adding package
+void addPackage() {
+    Travelling_data pkg;
+    int chose;
+    char pass[20];
+    printf("\t\tEnter your first name:  ");
+    scanf("%s", pkg.firstname);
+    printf("\t\tEnter your last name:  ");
+    scanf("%s", pkg.lastname);
+    printf("\nEnter your password:  ");
+    scanf("%s",pkg.password);
+	printf("Enter your email:  ");
+	scanf("%s", pkg.email);
+	printf("Enter your number:  ");
+	scanf("%d", pkg.number);
+    printf("\n\t\tEnter destination: ");
+    scanf("%s", pkg.destination);
+    printf("\n\tPackage added successfully!\n");
+    again:
+    printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
+    scanf("%d",&chose);
+    switch(chose){
+    	case 1: addPackage(); break;
+    	case 2: menu(username); return;
+    	case 3: exit(0);
+    	defult: 
+		printf("The option is not here...! [retry]");
+		goto again;
+	}
 }
