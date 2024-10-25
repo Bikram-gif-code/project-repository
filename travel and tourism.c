@@ -113,6 +113,7 @@ void Heading(){
 				// menu options
 void menu(char username[]) {
     int choice;
+    system("cls");
        Heading();
         printf("\n\n\n\tHello %s",username);
         printf("\n\tPlease chose the following options.");
@@ -124,16 +125,22 @@ void menu(char username[]) {
         printf("\n\tEnter your choice: ");
         scanf("%d", &choice);
         switch(choice){
-        	case 1: addPackage(); break;
-        		
+        	case 1: addPackage(username); break;
+        	case 5:	exit(0); break;
 		}
 }
 
 				// adding package
-void addPackage() {
+void addPackage(char username[]) {
     Travelling_data pkg;
+     FILE *file = fopen("Tourism.txt", "a");
+    if(file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
     int chose;
     char pass[20];
+    system("cls");
     printf("\t\tEnter your first name:  ");
     scanf("%s", pkg.firstname);
     printf("\t\tEnter your last name:  ");
@@ -146,16 +153,19 @@ void addPackage() {
 	scanf("%d", pkg.number);
     printf("\n\t\tEnter destination: ");
     scanf("%s", pkg.destination);
-    printf("\n\tPackage added successfully!\n");
-    again:
-    printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
-    scanf("%d",&chose);
-    switch(chose){
-    	case 1: addPackage(); break;
+    again:{
+    	printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
+    	scanf("%d",&chose);
+    	switch(chose){
+    	case 1: addPackage(username); break;
     	case 2: menu(username); return;
     	case 3: exit(0);
     	defult: 
-		printf("The option is not here...! [retry]");
+		printf("Invalid option ...! [retry]");
 		goto again;
+		}	
 	}
+	 fprintf(file, "%d %s %.2f %d\n", pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number pkg.destination);
+    fclose(file);
+    printf("\n\tPackage added successfully!\n");
 }
