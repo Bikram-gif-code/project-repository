@@ -3,6 +3,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<unistd.h>
+
 // functions...
 void Heading();
 void Welcome();
@@ -11,6 +12,7 @@ void viewPackages();
 void updatePackage();
 void deletePackage(); 
 void menu();
+
 				// structure of travelling package.
 typedef struct travelpackage{
 	int id;
@@ -22,7 +24,7 @@ typedef struct travelpackage{
 	char vehicles;
     char destination[50];
 }Travelling_data;
-
+			// main() function...
 int main(){
 	char username[20];
 	int password;        	
@@ -126,6 +128,10 @@ void menu(char username[]) {
         scanf("%d", &choice);
         switch(choice){
         	case 1: addPackage(username); break;
+<<<<<<< HEAD
+=======
+        	case 2: viewPackages(); break;
+>>>>>>> 7fef1a1 (C project)
         	case 5:	exit(0); break;
 		}
 }
@@ -153,8 +159,15 @@ void addPackage(char username[]) {
 	scanf("%d", pkg.number);
     printf("\n\t\tEnter destination: ");
     scanf("%s", pkg.destination);
+<<<<<<< HEAD
     again:{
     	printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
+=======
+	 fprintf(file, " %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+    fclose(file);
+    again:{
+    	printf("Enter [1] for (add another package)       Enter [2] for (menu)        Enter [3] for (exit)");
+>>>>>>> 7fef1a1 (C project)
     	scanf("%d",&chose);
     	switch(chose){
     	case 1: addPackage(username); break;
@@ -164,8 +177,39 @@ void addPackage(char username[]) {
 		printf("Invalid option ...! [retry]");
 		goto again;
 		}	
+<<<<<<< HEAD
+=======
+	}
+    printf("\n\tPackage added successfully!\n");
+}
+
+				// adding viewpackages() function...
+void viewPackages() {
+    Travelling_data pkg;
+    int display = 0;
+    FILE *file = fopen("Tourism.txt", "r");
+    if(file == NULL) {
+        printf("Error opening file or file is empty!\n");
+    }
+	system("cls");
+    printf("\n\t\t\t===== All Travel Packages =====\n");
+    while(fscanf(file, " %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF) {
+    	printf("\tname: %s %s \n\tpassword: %s \n\temail: %s \n\tnumber: %d \n\tdestination: %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+    	display++;
+    }
+    fclose(file);
+    if(display == 0){
+    	printf("Non of the record has been added.");
+>>>>>>> 7fef1a1 (C project)
 	}
 	 fprintf(file, "%d %s %.2f %d\n", pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number pkg.destination);
     fclose(file);
     printf("\n\tPackage added successfully!\n");
+}
+
+				// adding updatePackage() function....
+void updatePackage(){
+	Travelling_data pkg;
+	int id ;
+	int found = 0;
 }
