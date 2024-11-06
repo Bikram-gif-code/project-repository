@@ -9,8 +9,8 @@ void Heading();
 void Welcome();
 void addPackage(); 
 void viewPackages();
-void updatePackage();
-void deletePackage(); 
+void updatePackage(); 
+void deletePackage();
 void menu();
 
 				// structure of travelling package.
@@ -21,8 +21,8 @@ typedef struct travelpackage{
 	char password[20];
 	char email[30];
 	int number[15];
-	char vehicles;
     char destination[50];
+    char vehicles;
 }Travelling_data;
 			// main() function...
 int main(){
@@ -36,7 +36,7 @@ int main(){
 				// User Authentication.
 	printf("\n\n\n\t\tEnter your name:  ");
 	scanf("%[^\n]%*c", username);
-	printf("\n\t\tEnter login password:  ");
+	printf("\n\t\tEnter our login password:  ");
 	scanf("%d",&password);
 	if(password == 12345)			// Password is set as 12345.
 	{
@@ -47,18 +47,11 @@ int main(){
 			sleep(1);
 			printf(".");
 		}
-		system("cls");
 		menu(username);		// adding menu function...
 	}
 	else
 	{
 		int i;
-		printf("\n\n\n\t\t\t");
-		printf("Processing");
-		for(i=1; i<=2; i++){
-			sleep(1);
-			printf(".");
-		}
 		printf("\n\n\n\t\t\t");
 		printf("--- invalid password sorry ---");
 		printf("\n\t\t");
@@ -117,7 +110,7 @@ void menu(char username[]) {
     int choice;
     system("cls");
        Heading();
-        printf("\n\n\n\tHello %s",username);
+        printf("\n\n\n\tHello, %s",username);
         printf("\n\tPlease chose the following options.");
         printf("\n\n\t\t1. Add New Travel Package\n");
         printf("\t\t2. View All Travel Packages\n");
@@ -128,10 +121,9 @@ void menu(char username[]) {
         scanf("%d", &choice);
         switch(choice){
         	case 1: addPackage(username); break;
-<<<<<<< HEAD
-=======
-        	case 2: viewPackages(); break;
->>>>>>> 7fef1a1 (C project)
+        	case 2: viewPackages(username); break;
+        	case 3: updatePackage(); break;
+        	case 4: deletePackage(); break;
         	case 5:	exit(0); break;
 		}
 }
@@ -147,6 +139,8 @@ void addPackage(char username[]) {
     int chose;
     char pass[20];
     system("cls");
+    printf("Enter id for new package:  ");
+    scanf("%d",&pkg.id);
     printf("\t\tEnter your first name:  ");
     scanf("%s", pkg.firstname);
     printf("\t\tEnter your last name:  ");
@@ -159,33 +153,28 @@ void addPackage(char username[]) {
 	scanf("%d", pkg.number);
     printf("\n\t\tEnter destination: ");
     scanf("%s", pkg.destination);
-<<<<<<< HEAD
     again:{
     	printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
-=======
 	 fprintf(file, " %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
     fclose(file);
-    again:{
     	printf("Enter [1] for (add another package)       Enter [2] for (menu)        Enter [3] for (exit)");
->>>>>>> 7fef1a1 (C project)
     	scanf("%d",&chose);
     	switch(chose){
     	case 1: addPackage(username); break;
-    	case 2: menu(username); return;
+    	case 2: menu(username); break;
     	case 3: exit(0);
     	defult: 
 		printf("Invalid option ...! [retry]");
 		goto again;
 		}	
-<<<<<<< HEAD
-=======
 	}
     printf("\n\tPackage added successfully!\n");
 }
 
 				// adding viewpackages() function...
-void viewPackages() {
+void viewPackages(char username[]) {
     Travelling_data pkg;
+    int chose;
     int display = 0;
     FILE *file = fopen("Tourism.txt", "r");
     if(file == NULL) {
@@ -193,23 +182,115 @@ void viewPackages() {
     }
 	system("cls");
     printf("\n\t\t\t===== All Travel Packages =====\n");
-    while(fscanf(file, " %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF) {
-    	printf("\tname: %s %s \n\tpassword: %s \n\temail: %s \n\tnumber: %d \n\tdestination: %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+    while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF) {
+    	printf("\n\tid: %d\tname: %s %s \n\tpassword: %s \n\temail: %s \n\tnumber: %d \n\tdestination: %s\n",pkg.id ,pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
     	display++;
     }
     fclose(file);
     if(display == 0){
     	printf("Non of the record has been added.");
->>>>>>> 7fef1a1 (C project)
 	}
-	 fprintf(file, "%d %s %.2f %d\n", pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number pkg.destination);
     fclose(file);
-    printf("\n\tPackage added successfully!\n");
+    again:{
+    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+    	scanf("%d",&chose);
+    	switch(chose){
+    	case 1: menu(username); return;
+    	case 2: exit(0);
+    	defult: 
+		printf("Invalid option ...! [retry]");
+		goto again;
+		}	
+	}
 }
 
 				// adding updatePackage() function....
-void updatePackage(){
+void updatePackage(char username[]){
 	Travelling_data pkg;
-	int id ;
+	int id, chose ;
 	int found = 0;
+	FILE *file = fopen("Tourism.txt", "r");
+	FILE *temp = fopen("temp.txt", "w");
+	if(file == NULL || temp == NULL){
+		printf("\n\t\tunable to open the file\n");
+	}
+	printf("Enter the id to update:  ");
+	scanf("%d",&id);
+	while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF){
+		if(pkg.id == id){
+			printf("Enter the first name:  ");
+			scanf("%s",pkg.firstname);
+			printf("Enter the last name:  ");
+			scanf("%s",pkg.lastname);
+			printf("Enter the new password:  ");
+			scanf("%s",pkg.password);
+			printf("Enter the new email:  ");
+			scanf("%s",pkg.email);
+			printf("Enter the new number");
+			scanf("%d",&pkg.number);
+			printf("Enter the new destination");
+			scanf("%s",pkg.destination);
+		}
+		fprintf(temp, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+	}
+	fclose(file);
+	fclose(temp);
+	
+	if(found){
+		remove("Tourism.txt");
+		rename("temp.txt", "Tourism");
+	}
+	else{
+		printf("Sorry!! Id not found...");
+		remove("temp.txt");
+	}
+	again:{
+    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+    	scanf("%d",&chose);
+    	switch(chose){
+    	case 1: menu(username); return;
+    	case 2: exit(0);
+    	defult: 
+		printf("Invalid option ...! [retry]");
+		goto again;
+		}	
+	}
+}
+
+void deletePackage(char username[]){
+	Travelling_data pkg;
+	int id, found = 0, chose;
+	FILE*file = fopen("Traveling.txt", "r");
+	FILE*temp = fopen("temp.txt", "w");
+	if(file == NULL || temp == NULL){
+		printf("\n\t\tUnable to open the file.\n");
+		return;
+	}
+	while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF){
+		if(pkg.id != id){
+			fprintf(temp, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+		}
+		else{
+			found = 1;
+		}
+	}
+	if(found){
+		remove("Traveling.txt");
+		rename("temp.txt", "Traveling.txt");
+		printf("\n---Package removed successfully.---\n");
+	}else{
+		remove("temp.txt");
+		printf("\n\t\tId not found.\n");
+	}
+	again:{
+    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+    	scanf("%d",&chose);
+    	switch(chose){
+    	case 1: menu(username); return;
+    	case 2: exit(0);
+    	defult: 
+		printf("Invalid option ...! [retry]");
+		goto again;
+		}	
+	}
 }
