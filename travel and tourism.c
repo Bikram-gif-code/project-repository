@@ -2,16 +2,16 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include<unistd.h>
 
 // functions...
 void Heading();
 void Welcome();
-void addPackage(); 
-void viewPackages();
-void updatePackage(); 
-void deletePackage();
-void menu();
+void menu(char []);
+void addPackage(char []); 
+void viewPackages(char []);
+void updatePackage(char []); 
+void deletePackage(char []);
+
 
 				// structure of travelling package.
 typedef struct travelpackage{
@@ -19,14 +19,15 @@ typedef struct travelpackage{
 	char firstname[20];
 	char lastname[20];
 	char password[20];
-	char email[30];
+	char email[40];
 	int number[15];
     char destination[50];
     char vehicles;
 }Travelling_data;
+
 			// main() function...
 int main(){
-	char username[20];
+	char username[30];
 	int password;        	
 	
 	
@@ -41,12 +42,7 @@ int main(){
 	if(password == 12345)			// Password is set as 12345.
 	{
 		printf("\n\n\n\t\t\t");
-		printf("login successfull\n\n\tprocessing");
-		int i;
-		for(i=1; i<=3; i++){
-			sleep(1);
-			printf(".");
-		}
+		printf("login successfully\n\n\tprocessing");
 		menu(username);		// adding menu function...
 	}
 	else
@@ -55,11 +51,7 @@ int main(){
 		printf("\n\n\n\t\t\t");
 		printf("--- invalid password sorry ---");
 		printf("\n\t\t");
-		printf("press any key to exit ....");
-		while(i<5){
-			printf("\n");
-			i++;
-		}
+		printf("  press any key to exit ....\n\n");
 	}
 	return 0;
 }
@@ -117,58 +109,76 @@ void menu(char username[]) {
         printf("\t\t3. Update Travel Package\n");
         printf("\t\t4. Delete Travel Package\n");
         printf("\t\t5. Exit\n");
-        printf("\n\tEnter your choice: ");
+        printf("\n\tEnter your choice:");
+        retry:
+        printf("\n\t  >>  ");
         scanf("%d", &choice);
         switch(choice){
         	case 1: addPackage(username); break;
         	case 2: viewPackages(username); break;
-        	case 3: updatePackage(); break;
-        	case 4: deletePackage(); break;
+        	case 3: updatePackage(username); break;
+        	case 4: deletePackage(username); break;
         	case 5:	exit(0); break;
+		}
+		if(choice>5){
+			printf("\n\tThe option is not here....! [retry]");
+        	goto retry;
 		}
 }
 
 				// adding package
 void addPackage(char username[]) {
     Travelling_data pkg;
-     FILE *file = fopen("Tourism.txt", "a");
+     FILE *file = fopen("Tourism.txt", "a+");
     if(file == NULL) {
-        printf("Error opening file!\n");
+        printf("Unable to open the file!\n");
         return;
     }
+    int id;
     int chose;
-    char pass[20];
     system("cls");
-    printf("Enter id for new package:  ");
-    scanf("%d",&pkg.id);
-    printf("\t\tEnter your first name:  ");
+    Heading();
+    retry:
+    printf("\n\n\t\tEnter id for new package:  ");
+    scanf("%d",&id);
+    while(fscanf(file, "%d %s %s %s %s %d %s\n", &pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, &pkg.number, pkg.destination) != EOF){
+    	if(id == pkg.id){ 		
+	printf("\t\t\t The ID has been already used. \n");
+	printf("\t\t\t PLEASE TRY ANOTHER ID....");		
+	goto retry;
+		}else{
+			pkg.id = id;
+		}
+	}
+    printf("\t\tEnter your First name:  ");
     scanf("%s", pkg.firstname);
-    printf("\t\tEnter your last name:  ");
+    printf("\t\tEnter your Last name:  ");
     scanf("%s", pkg.lastname);
-    printf("\nEnter your password:  ");
+    printf("\n\t\tEnter your Password:  ");
     scanf("%s",pkg.password);
-	printf("Enter your email:  ");
+	printf("\t\tEnter your Email:  ");
 	scanf("%s", pkg.email);
-	printf("Enter your number:  ");
+	printf("\t\tEnter your Number:  ");
 	scanf("%d", pkg.number);
-    printf("\n\t\tEnter destination: ");
+    printf("\n\t\tEnter Destination: ");
     scanf("%s", pkg.destination);
-    again:{
-    	printf("Enter [1] for (add another package),   Enter [2] for (menu) and   Enter [3] for (exit).");
-	 fprintf(file, " %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+    
+	 fprintf(file, "%d %s %s %s %s %d %s\n",pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
     fclose(file);
-    	printf("Enter [1] for (add another package)       Enter [2] for (menu)        Enter [3] for (exit)");
+    printf("\n\tPackage added successfully!\n");
+    again:
+    	printf("Enter [1] for (add another package)       Enter [2] for (menu)        Enter [3] for (exit):");
+    	printf("\n\t  >> ");
     	scanf("%d",&chose);
     	switch(chose){
     	case 1: addPackage(username); break;
     	case 2: menu(username); break;
     	case 3: exit(0);
-    	defult: 
+    	}
+    	if(chose < 3){
 		printf("Invalid option ...! [retry]");
 		goto again;
 		}	
-	}
-    printf("\n\tPackage added successfully!\n");
 }
 
 				// adding viewpackages() function...
@@ -178,21 +188,23 @@ void viewPackages(char username[]) {
     int display = 0;
     FILE *file = fopen("Tourism.txt", "r");
     if(file == NULL) {
-        printf("Error opening file or file is empty!\n");
+        printf("\n\nUnable to open the file!\n");
     }
 	system("cls");
-    printf("\n\t\t\t===== All Travel Packages =====\n");
-    while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF) {
-    	printf("\n\tid: %d\tname: %s %s \n\tpassword: %s \n\temail: %s \n\tnumber: %d \n\tdestination: %s\n",pkg.id ,pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+    printf("\n\t\t\t===== All Traveling Packages =====\n\n");
+    while(fscanf(file, "%d %s %s %s %s %d %s\n", &pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, &pkg.number, pkg.destination) != EOF) {
+    	printf("\n\tid:\t\t %d\n\tname: \t%s %s \n\tpassword: %s \n\temail:\t %s \n\tnumber: %d \n\tdestination: %s\n",pkg.id ,pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
     	display++;
     }
     fclose(file);
     if(display == 0){
-    	printf("Non of the record has been added.");
+    	printf("\n\tNon of the record has been added.\n");
+    	goto again;
 	}
     fclose(file);
     again:{
-    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+    	printf("\n\n\tEnter [1] for (menu)        Enter [2] for (exit):");
+    	printf("\n\t  >> ");
     	scanf("%d",&chose);
     	switch(chose){
     	case 1: menu(username); return;
@@ -212,61 +224,66 @@ void updatePackage(char username[]){
 	FILE *file = fopen("Tourism.txt", "r");
 	FILE *temp = fopen("temp.txt", "w");
 	if(file == NULL || temp == NULL){
-		printf("\n\t\tunable to open the file\n");
+		printf("\n\t\tUnable to open the file!\n");
 	}
-	printf("Enter the id to update:  ");
+	printf("\n\tEnter the id to update:  ");
 	scanf("%d",&id);
-	while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF){
+	while(fscanf(file, "%d %s %s %s %s %d %s\n", &pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, &pkg.number, pkg.destination) != EOF){
 		if(pkg.id == id){
-			printf("Enter the first name:  ");
+			printf("\n\tEnter the first name:  ");
 			scanf("%s",pkg.firstname);
-			printf("Enter the last name:  ");
+			printf("\n\tEnter the last name:  ");
 			scanf("%s",pkg.lastname);
-			printf("Enter the new password:  ");
+			printf("\n\tEnter the new password:  ");
 			scanf("%s",pkg.password);
-			printf("Enter the new email:  ");
+			printf("\n\tEnter the new email:  ");
 			scanf("%s",pkg.email);
-			printf("Enter the new number");
+			printf("\n\tEnter the new number:  ");
 			scanf("%d",&pkg.number);
-			printf("Enter the new destination");
+			printf("\n\tEnter the new destination:  ");
 			scanf("%s",pkg.destination);
 		}
-		fprintf(temp, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
+		fprintf(temp, "%d %s %s %s %s %d %s\n",pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
 	}
 	fclose(file);
 	fclose(temp);
 	
 	if(found){
 		remove("Tourism.txt");
-		rename("temp.txt", "Tourism");
+		rename("temp.txt", "Tourism.txt");
 	}
 	else{
 		printf("Sorry!! Id not found...");
 		remove("temp.txt");
 	}
-	again:{
-    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+	again:
+    	printf("\n\tEnter [1] for (menu)        Enter [2] for (exit):");
+    	printf("\n\t  >> ");
     	scanf("%d",&chose);
     	switch(chose){
     	case 1: menu(username); return;
     	case 2: exit(0);
-    	defult: 
+		}
+	if(chose < 2){
 		printf("Invalid option ...! [retry]");
 		goto again;
-		}	
 	}
 }
 
 void deletePackage(char username[]){
 	Travelling_data pkg;
 	int id, found = 0, chose;
-	FILE*file = fopen("Traveling.txt", "r");
+	FILE*file = fopen("Tourism.txt", "r");
 	FILE*temp = fopen("temp.txt", "w");
 	if(file == NULL || temp == NULL){
-		printf("\n\t\tUnable to open the file.\n");
+		printf("\n\t\tUnable to open the file!\n");
 		return;
 	}
-	while(fscanf(file, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination) != EOF){
+	
+	printf("\t\tEnter the id of package to delete:  ");
+	scanf("%d",&id);
+	
+	while(fscanf(file, "%d %s %s %s %s %d %s\n", &pkg.id, pkg.firstname, pkg.lastname, pkg.password, pkg.email, &pkg.number, pkg.destination) != EOF){
 		if(pkg.id != id){
 			fprintf(temp, "%d %s %s %s %s %d %s\n", pkg.firstname, pkg.lastname, pkg.password, pkg.email, pkg.number, pkg.destination);
 		}
@@ -274,23 +291,28 @@ void deletePackage(char username[]){
 			found = 1;
 		}
 	}
+	
+	fclose(file);
+	fclose(temp);
 	if(found){
-		remove("Traveling.txt");
-		rename("temp.txt", "Traveling.txt");
-		printf("\n---Package removed successfully.---\n");
+		remove("Tourism.txt");
+		rename("temp.txt", "Tourism.txt");
+		printf("\n\t   ---Package removed successfully.---\n");
 	}else{
 		remove("temp.txt");
 		printf("\n\t\tId not found.\n");
 	}
-	again:{
-    	printf("Enter [1] for (menu)        Enter [2] for (exit)");
+    	printf("\n\tEnter [1] for (menu)        Enter [2] for (exit):");
+    	again:{
+    	printf("\n\t  >> ");
     	scanf("%d",&chose);
     	switch(chose){
-    	case 1: menu(username); return;
+    	case 1: menu(username); break;
     	case 2: exit(0);
-    	defult: 
-		printf("Invalid option ...! [retry]");
-		goto again;
+    	}
+		if(chose < 2){
+			printf("\n\t   Invalid option ...! [retry]");
+			goto again;
 		}	
 	}
 }
